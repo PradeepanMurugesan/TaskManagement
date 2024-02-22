@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Updates</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-x: auto; /* Add horizontal scroll if necessary */
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px; /* Increased padding for better readability */
+            text-align: center; /* Center aligning content */
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        button {
+            padding: 10px 20px; /* Adjusted padding */
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .no-tasks-message {
+            text-align: center;
+            color: #555;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+        <a class="navbar-brand" href="#">
+            <img src="https://rejola.com/wp-content/uploads/2020/09/Rejola_logo.png" alt="Logo" style="width: 100px; height: auto;">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link btn btn-success rounded"  style="color:white;" href="{% url 'add_task' %}">Add Task</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-success rounded"  style="color:white;" href="{% url 'task_list' %} ">Task List</a></li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-success rounded"  style="color:white;" href="{% url 'logout' %}" style="background-color:red;">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+ 
+
+<br>
+    <div class="container">
+        <h2 style="color:black;">Task Updates</h2>
+        <h3 style="color:green">Completed Status</h3>
+        {% if completed_updates %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task Name</th>
+                        <th>Assigned To</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for update in completed_updates %}
+                        <tr>
+                            <td>{{ update.task.task_name }}</td>
+                            <td>{{ update.task.assign_to }}</td>
+                            <td>{{ update.task_status }}</td>
+                            <td>{{ update.remarks }}</td>
+                            <td><a href="{% url 'delete_task' task_id=update.task.id %}">Delete</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-tasks-message">No completed tasks available.</p>
+        {% endif %}
+    </div>
+    <div class="container">
+        <h3 style="color:darkorange">Ongoing Tasks</h3>
+        {% if ongoing_updates %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Task Name</th>
+                    <th>Assigned To</th>
+                    <th>Deadline</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for update in ongoing_updates %}
+                    <tr>
+                        <td>{{ update.task.task_name }}</td>
+                        <td>{{ update.task.assign_to }}</td>
+                        <td>{{ update.task.deadline }}</td>
+                        <td><a href="{% url 'delete_task' task_id=update.task.id %}">Delete</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="no-tasks-message">No ongoing tasks available.</p>
+    {% endif %}
+    </div>
+    <div class="container">
+        <h3 style="color:Red">Dropped Tasks</h3>
+        {% if dropped_updates %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task Name</th>
+                        <th>Assigned To</th>
+                        <th>Remarks</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for update in dropped_updates %}
+                        <tr>
+                            <td>{{ update.task.task_name }}</td>
+                            <td>{{ update.task.assign_to }}</td>
+                            <td>{{ update.remarks }}</td>
+                            <td><a href="{% url 'delete_task' task_id=update.task.id %}">Delete</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-tasks-message">No dropped tasks available.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
